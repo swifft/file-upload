@@ -140,7 +140,7 @@ app.post('/wxSceneryUpload',wxSceneryUploadUrl.array('file',10),(req,res,next) =
     }
 })
 
-//微信小程序景点信息上传
+//微信小程序轮播图上传
 //设置上传目录
 const wxBannerUploadUrl = upload({dest: '../../upLoad/image/wxbs/banner/'});
 app.post('/wxBannerUpload',wxBannerUploadUrl.single('file'),(req,res,next)=>{
@@ -171,6 +171,44 @@ app.post('/wxBannerUpload',wxBannerUploadUrl.single('file'),(req,res,next)=>{
                     data:{
                         fileInfo,
                         url : 'https://file.gxnudsl.xyz/image/wxbs/banner/' + newName
+                    }
+                });
+            }
+        });
+    }
+})
+
+//微信小程序头像上传
+//设置上传目录
+const wxAvatarUploadUrl = upload({dest: '../../upLoad/image/wxbs/avatar/'});
+app.post('/wxAvatarUpload',wxAvatarUploadUrl.single('file'),(req,res,next)=>{
+    if (req.file.length === 0) {  //判断一下文件是否存在，也可以在前端代码中进行判断。
+        res.json({
+            resultInfo:'error',
+            msg:'上传文件不能为空！'
+        });
+    } else {
+        let file = req.file;
+        let fileInfo = {};
+        const newName = Date.now() + file.originalname
+        // 获取文件信息
+        fileInfo.mimetype = file.mimetype;
+        fileInfo.originalname = file.originalname;
+        fileInfo.size = file.size;
+        fileInfo.path = file.path;
+        //修改文件名
+        fs.rename(file.path,'../../upLoad/image/wxbs/avatar/' +  newName,(err)=>{
+            if(err){
+                res.json({
+                    resultInfo:'error',
+                    data:null
+                });
+            }else{
+                res.json({
+                    resultInfo:'success',
+                    data:{
+                        fileInfo,
+                        url : 'https://file.gxnudsl.xyz/image/wxbs/avatar/' + newName
                     }
                 });
             }
