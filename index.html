@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://file.gxnudsl.xyz/CDN/layui-v2.5.6/layui/css/layui.css">
+    <style>
+        .welcome {
+            width: 100%;
+            font-size: 28px;
+            font-weight: bold;
+            padding: 20px 0;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .public_0 {
+            padding: 20px;
+        }
+
+        .public_font {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .public_margin {
+            margin: 10px 0;
+        }
+
+        .content {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .content_0 {
+            display: flex;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .content_1 {
+            width: 50%;
+            margin: 20px auto;
+        }
+
+        .content_2{
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 25px;
+            width: 100%;
+            text-align: center;
+            line-height: 25px;
+            font-size: 16px;
+        }
+
+        a{
+            margin-left: 30px;
+            color: #999;
+        }
+
+        a:hover{
+            color: #000;
+        }
+    </style>
+    <title>文件上传接口工具</title>
+</head>
+<body>
+<div class="container">
+    <div class="layui-anim layui-anim-scaleSpring welcome">Hello Developer!</div>
+    <div class="content">
+        <div class="content_0">
+            欢迎使用Mr.D提供的开放文件上传接口，具体使用方法如下：
+        </div>
+        <div class="layui-tab layui-tab-brief content_1" lay-filter="docDemoTabBrief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">单文件上传</li>
+                <li>多文件上传</li>
+            </ul>
+            <div class="layui-tab-content" style="height: 100px;">
+                <div class="layui-tab-item layui-show public_0">
+                    <div class="public_font public_margin">请求地址：/singleFileUpload</div>
+                    <div class="public_font public_margin">请求方式：POST</div>
+                    <div class="public_font public_margin">上传文件文件名：file</div>
+                    <div class="public_font public_margin">
+                        <strong>注意：</strong>测试接口前 （ <span style="color: #FF5722">返回结果请打开控制台查看</span> ）
+                    </div>
+
+                    <div class="layui-upload">
+                        <button type="button" class="layui-btn" id="test1">上传图片</button>
+                        <div class="layui-upload-list">
+                            <img class="layui-upload-img" id="demo1" style="width: 300px;height: 300px;">
+                            <p id="demoText"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-tab-item public_0">
+                    <div class="public_font public_margin">请求地址：/marryFileUpload</div>
+                    <div class="public_font public_margin">请求方式：POST</div>
+                    <div class="public_font public_margin">上传文件文件名：file</div>
+                    <div class="public_font public_margin">最大支持上传文件数量：10</div>
+                    <div class="public_font public_margin">
+                        <strong>注意：</strong>测试接口前 （ <span style="color: #FF5722">返回结果请打开控制台查看</span> ）
+                    </div>
+
+                    <div class="layui-upload">
+                        <button type="button" class="layui-btn" id="test2">上传图片</button>
+                        <div class="layui-upload-list">
+                            <img class="layui-upload-img" id="demo2">
+                            <p id="demoText1"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content_2">Design By DengShiLin  <a href="https://beian.miit.gov.cn/#/Integrated/index">陕ICP备20006581号-1</a></div>
+    </div>
+</div>
+<script src="https://file.gxnudsl.xyz/CDN/layui-v2.5.6/layui/layui.js"></script>
+<script>
+    layui.use('element');
+    layui.use('upload', function () {
+        var $ = layui.jquery
+            , upload = layui.upload;
+
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#test1'
+            , url: 'https://upload.gxnudsl.xyz/singleFileUpload' //改成您自己的上传接口
+            , before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#demo1').attr('src', result); //图片链接（base64）
+                });
+            }
+            , done: function (res) {
+                //如果上传失败
+                if (res.code > 0) {
+                    return layer.msg('上传失败');
+                }else {
+                    console.log(res)
+                }
+            }
+            , error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+        });
+        upload.render({
+            elem: '#test2'
+            ,url: 'https://upload.gxnudsl.xyz/marryFileUpload' //改成您自己的上传接口
+            ,multiple: true
+            ,before: function(obj){
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#demo2').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">')
+                });
+            }
+            ,done: function(res){
+                //上传完毕
+                if (res.code > 0) {
+                    return layer.msg('上传失败');
+                }else {
+                    console.log(res)
+                }
+            }, error: function () {
+                //演示失败状态，并实现重传
+                var demoText1 = $('#demoText1');
+                demoText1.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                demoText1.find('.demo-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+        });
+    })
+</script>
+</body>
+</html>
